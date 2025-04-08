@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ColorHelper - Dual Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: #1E1F22;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Левый блок с кнопками */
+        .left-panel {
+            width: 150px;
+            background-color: #1A1919;
+            padding: 20px 10px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .left-panel button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: #2C2B2B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .left-panel button:hover {
+            background-color: #3D3C3C;
+            transform: translateX(5px);
+        }
+
+        /* Основной контейнер */
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: calc(100% - 150px);
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1E1F22;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(205, 84, 197, 0.5);
+        }
+
+        .images-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .image-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        #imageContainer1, #imageContainer2 {
+            position: relative;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .color-box {
+            display: inline-block;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            color: white;
+            background-color: #0B0A07;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hex-box {
+            display: inline-block;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            color: white;
+            background-color: #0B0A07;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .v1_2 {
+            width: 250px;
+            height: 50px;
+            background-color: #B129DA;
+            opacity: 1;
+            position: relative;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(205, 84, 197, 0.5);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .gradient-box {
+            width: 100%;
+            height: 200px;
+            margin: 40px auto;
+            border: 2px solid #2C2B2B;
+            border-radius: 8px;
+            background: linear-gradient(to right, #000000, #ffffff);
+            box-shadow: 0 5px 10px rgba(205, 84, 197, 0.5);
+            transition: all 0.5s ease;
+        }
+
+        .reset-button {
+            padding: 10px 15px;
+            margin: 10px auto;
+            display: block;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 10px rgba(255, 68, 68, 0.7);
+        }
+
+        /* Стеклянная панель */
+        .glass-panel {
+            background: rgba(30, 31, 34, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-item {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-item:hover {
+            transform: scale(1.05);
+        }
+
+        .color-square {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .color-value {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+
+        /* Анимации и эффекты */
+        .color-box:hover, .hex-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .v1_2:hover {
+            background-color: #9c18db;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .reset-button:hover {
+            background-color: #cc0000;
+            transform: scale(1.05);
+            animation: reset-pulse 1.5s infinite;
+            box-shadow: 0 5px 10px rgba(255, 68, 68, 0.7);
+        }
+
+        @keyframes reset-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7),
+                            0 5px 10px rgba(255, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 68, 68, 0),
+                            0 5px 10px rgba(255, 68, 68, 0.7);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0),
+                            0 5px 10px rgba(255, 68, 68, 0.7);
+            }
+        }
+
+        /* Индикатор загрузки */
+        .loading-bar {
+            position: relative;
+            height: 4px;
+            background: rgba(205, 84, 197, 0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, transparent, #B129DA, transparent);
+            animation: loading 2s infinite linear;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        /* Подсказки при копировании */
+        .copy-tooltip {
+            position: fixed;
+            background-color: #333;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            left: 50%;
+            top: 20%;
+            transform: translateX(-50%);
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(205, 84, 197, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(205, 84, 197, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(205, 84, 197, 0); }
+        }
+
+        .left-panel button:hover,
+        .v1_2:hover {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Левый блок с кнопками -->
+    <div class="left-panel">
+        <button onclick="window.location.href='index.html'">Вернуться назад</button>
+        <button id="helpBtn">Помощь</button>
+    </div>
+
+    <!-- Основное содержимое -->
+    <div class="main-container">
+        <div class="container">
+            <h1 style="text-align: center; color: #8EB93A; font-size: 2.5rem; margin: 0 0 20px 0;">ColorHelper - Dual Mode</h1>
+
+            <div class="loading-bar"></div>
+
+            <div class="images-row">
+                <!-- Первое изображение -->
+                <div class="image-section">
+                    <div class="v1_2" onclick="document.getElementById('fileInput1').click();">Добавить первое изображение</div>
+                    <input type="file" id="fileInput1" accept="image/*" style="display: none;" onchange="loadImage(1);">
+
+                    <div id="imageContainer1"></div>
+                    <div id="colorInfo1" class="color-box">Цвет: rgb(0, 0, 0)</div>
+                    <div id="hexInfo1" class="hex-box">HEX: #000000</div>
+                    <button class="reset-button" onclick="resetSelectedColor(1)">Сбросить цвет</button>
+                </div>
+
+                <!-- Второе изображение -->
+                <div class="image-section">
+                    <div class="v1_2" onclick="document.getElementById('fileInput2').click();">Добавить второе изображение</div>
+                    <input type="file" id="fileInput2" accept="image/*" style="display: none;" onchange="loadImage(2);">
+
+                    <div id="imageContainer2"></div>
+                    <div id="colorInfo2" class="color-box">Цвет: rgb(0, 0, 0)</div>
+                    <div id="hexInfo2" class="hex-box">HEX: #000000</div>
+                    <button class="reset-button" onclick="resetSelectedColor(2)">Сбросить цвет</button>
+                </div>
+            </div>
+
+            <!-- Градиентный блок -->
+            <div id="gradientBox" class="gradient-box"></div>
+
+            <!-- Стеклянная панель последних градиентов -->
+            <div class="glass-panel">
+                <h2 style="margin: 0 0 10px 0; font-size: 1.2rem;">Последние градиенты</h2>
+                <div class="loading-bar"></div>
+                <div class="color-grid" id="recentGradientsContainer">
+                    <!-- Градиенты будут добавляться динамически -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно помощи -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Помощь</h2>
+            <p>1. Загрузите два изображения, нажав на соответствующие кнопки</p>
+            <p>2. Кликните по первому изображению, чтобы выбрать начальный цвет градиента</p>
+            <p>3. Кликните по второму изображению, чтобы выбрать конечный цвет градиента</p>
+            <p>4. Градиент автоматически обновится в центральном блоке</p>
+            <p>5. Кликните по цветным блокам, чтобы скопировать значения цветов</p>
+            <p>6. Используйте кнопку "Сбросить", чтобы очистить выбранный цвет</p>
+        </div>
+    </div>
+
+    <script>
+        // ===== Переменные =====
+        let canvas1, context1, canvas2, context2;
+        let selectedColor1 = null;
+        let selectedColor2 = null;
+        let isColorSelected1 = false;
+        let isColorSelected2 = false;
+        let recentGradients = JSON.parse(localStorage.getItem('recentGradients')) || [];
+
+        // ===== Инициализация =====
+        document.addEventListener('DOMContentLoaded', function() {
+            setupColorCopy();
+            setupModalButtons();
+            updateRecentGradientsDisplay();
+            
+            // Инициализация значений по умолчанию
+            const defaultColor = { r: 0, g: 0, b: 0 };
+            updateColorBoxes(1, defaultColor, false);
+            updateColorBoxes(2, defaultColor, false);
+        });
+
+        // ===== Функции для работы с изображениями =====
+        function loadImage(imageNum) {
+            const fileInput = document.getElementById(`fileInput${imageNum}`);
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '400px';
+                img.id = `loadedImage${imageNum}`;
+
+                document.getElementById(`imageContainer${imageNum}`).innerHTML = '';
+                document.getElementById(`imageContainer${imageNum}`).appendChild(img);
+
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+
+                if (imageNum === 1) {
+                    canvas1 = canvas;
+                    context1 = context;
+                } else {
+                    canvas2 = canvas;
+                    context2 = context;
+                }
+
+                img.onload = function() {
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    context.drawImage(img, 0, 0);
+
+                    img.addEventListener('mousemove', (e) => showHoverColor(e, imageNum));
+                    img.addEventListener('click', (e) => saveSelectedColor(e, imageNum));
+                    img.addEventListener('mouseout', () => clearHoverColor(imageNum));
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetSelectedColor(imageNum) {
+            if (imageNum === 1) {
+                selectedColor1 = null;
+                isColorSelected1 = false;
+            } else {
+                selectedColor2 = null;
+                isColorSelected2 = false;
+            }
+            
+            const defaultColor = { r: 0, g: 0, b: 0 };
+            updateColorBoxes(imageNum, defaultColor, false);
+            updateGradient();
+        }
+
+        function showHoverColor(event, imageNum) {
+            if ((imageNum === 1 && isColorSelected1) || (imageNum === 2 && isColorSelected2)) return;
+            const color = getColorAtPosition(event, imageNum);
+            updateColorBoxes(imageNum, color, false);
+        }
+
+        function saveSelectedColor(event, imageNum) {
+            const color = getColorAtPosition(event, imageNum);
+            
+            if (imageNum === 1) {
+                selectedColor1 = color;
+                isColorSelected1 = true;
+            } else {
+                selectedColor2 = color;
+                isColorSelected2 = true;
+            }
+            
+            updateColorBoxes(imageNum, color, true);
+            updateGradient();
+            
+            // Сохраняем градиент, если оба цвета выбраны
+            if (selectedColor1 && selectedColor2) {
+                saveRecentGradient();
+            }
+        }
+
+        function clearHoverColor(imageNum) {
+            if ((imageNum === 1 && !isColorSelected1) || (imageNum === 2 && !isColorSelected2)) {
+                const defaultColor = { r: 0, g: 0, b: 0 };
+                updateColorBoxes(imageNum, defaultColor, false);
+            }
+        }
+
+        function getColorAtPosition(event, imageNum) {
+            const img = event.target;
+            const rect = img.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const scaleX = img.naturalWidth / rect.width;
+            const scaleY = img.naturalHeight / rect.height;
+
+            const correctedX = Math.floor(x * scaleX);
+            const correctedY = Math.floor(y * scaleY);
+
+            const context = imageNum === 1 ? context1 : context2;
+            const imageData = context.getImageData(correctedX, correctedY, 1, 1);
+            const data = imageData.data;
+
+            return { r: data[0], g: data[1], b: data[2] };
+        }
+
+        function updateColorBoxes(imageNum, color, isSelected) {
+            const colorBox = document.getElementById(`colorInfo${imageNum}`);
+            const hexBox = document.getElementById(`hexInfo${imageNum}`);
+
+            const rgbString = `rgb(${color.r}, ${color.g}, ${color.b})`;
+            const hexString = rgbToHex(color.r, color.g, color.b);
+
+            colorBox.dataset.colorValue = rgbString;
+            hexBox.dataset.colorValue = hexString;
+
+            if (isSelected) {
+                colorBox.textContent = `Выбран: ${rgbString}`;
+                hexBox.textContent = `HEX: ${hexString}`;
+            } else {
+                colorBox.textContent = `Наведите: ${rgbString}`;
+                hexBox.textContent = `HEX: ${hexString}`;
+            }
+            
+            // Плавное изменение цвета
+            colorBox.style.transition = 'background-color 0.5s ease';
+            hexBox.style.transition = 'background-color 0.5s ease';
+            
+            colorBox.style.backgroundColor = rgbString;
+            hexBox.style.backgroundColor = hexString;
+        }
+
+        function updateGradient() {
+            const gradientBox = document.getElementById('gradientBox');
+            if (selectedColor1 && selectedColor2) {
+                const color1 = `rgb(${selectedColor1.r}, ${selectedColor1.g}, ${selectedColor1.b})`;
+                const color2 = `rgb(${selectedColor2.r}, ${selectedColor2.g}, ${selectedColor2.b})`;
+                
+                gradientBox.style.background = `linear-gradient(to right, ${color1}, ${color2})`;
+            } else if (selectedColor1) {
+                const color1 = `rgb(${selectedColor1.r}, ${selectedColor1.g}, ${selectedColor1.b})`;
+                gradientBox.style.background = `linear-gradient(to right, ${color1}, #ffffff)`;
+            } else if (selectedColor2) {
+                const color2 = `rgb(${selectedColor2.r}, ${selectedColor2.g}, ${selectedColor2.b})`;
+                gradientBox.style.background = `linear-gradient(to right, #000000, ${color2})`;
+            } else {
+                gradientBox.style.background = 'linear-gradient(to right, #000000, #ffffff)';
+            }
+        }
+
+        // ===== Функции для работы с последними градиентами =====
+        function saveRecentGradient() {
+            const gradient = {
+                color1: selectedColor1,
+                color2: selectedColor2,
+                hex1: rgbToHex(selectedColor1.r, selectedColor1.g, selectedColor1.b),
+                hex2: rgbToHex(selectedColor2.r, selectedColor2.g, selectedColor2.b)
+            };
+
+            // Удаляем дубликаты
+            recentGradients = recentGradients.filter(g => 
+                !(g.hex1 === gradient.hex1 && g.hex2 === gradient.hex2)
+            );
+
+            // Добавляем новый градиент в начало
+            recentGradients.unshift(gradient);
+
+            // Ограничиваем количество
+            if (recentGradients.length > 6) {
+                recentGradients = recentGradients.slice(0, 6);
+            }
+
+            // Сохраняем и обновляем
+            localStorage.setItem('recentGradients', JSON.stringify(recentGradients));
+            updateRecentGradientsDisplay();
+        }
+
+        function updateRecentGradientsDisplay() {
+            const container = document.getElementById('recentGradientsContainer');
+            container.innerHTML = '';
+
+            if (!recentGradients || recentGradients.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #aaa;">Нет сохраненных градиентов</p>';
+                return;
+            }
+
+            recentGradients.forEach(gradient => {
+                const gradientItem = document.createElement('div');
+                gradientItem.className = 'color-item';
+                gradientItem.innerHTML = `
+                    <div class="color-square" style="background: linear-gradient(to right, ${gradient.hex1}, ${gradient.hex2});"></div>
+                    <div class="color-value">${gradient.hex1} → ${gradient.hex2}</div>
+                `;
+
+                gradientItem.addEventListener('click', () => {
+                    selectedColor1 = gradient.color1;
+                    selectedColor2 = gradient.color2;
+                    isColorSelected1 = true;
+                    isColorSelected2 = true;
+                    
+                    updateColorBoxes(1, gradient.color1, true);
+                    updateColorBoxes(2, gradient.color2, true);
+                    updateGradient();
+                });
+
+                container.appendChild(gradientItem);
+            });
+        }
+
+        // ===== Вспомогательные функции =====
+        function rgbToHex(r, g, b) {
+            return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
+        // ===== Функции копирования цветов =====
+        function setupColorCopy() {
+            // Для первого изображения
+            document.getElementById('colorInfo1').addEventListener('click', function() {
+                copyColorValue(this.dataset.colorValue, 'RGB (1) скопирован!');
+            });
+            
+            document.getElementById('hexInfo1').addEventListener('click', function() {
+                copyColorValue(this.dataset.colorValue, 'HEX (1) скопирован!');
+            });
+
+            // Для второго изображения
+            document.getElementById('colorInfo2').addEventListener('click', function() {
+                copyColorValue(this.dataset.colorValue, 'RGB (2) скопирован!');
+            });
+            
+            document.getElementById('hexInfo2').addEventListener('click', function() {
+                copyColorValue(this.dataset.colorValue, 'HEX (2) скопирован!');
+            });
+        }
+
+        async function copyColorValue(value, message) {
+            if (!value) {
+                console.error('Нет значения для копирования');
+                return;
+            }
+
+            try {
+                // Пробуем использовать современный API
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(value);
+                    showCopyTooltip(message);
+                    return;
+                }
+                
+                // Fallback для старых браузеров
+                const textarea = document.createElement('textarea');
+                textarea.value = value;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                
+                const success = document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                if (!success) {
+                    throw new Error('Не удалось скопировать текст');
+                }
+                
+                showCopyTooltip(message);
+            } catch (error) {
+                console.error('Ошибка при копировании:', error);
+                showCopyTooltip('Не удалось скопировать', true);
+            }
+        }
+
+        function showCopyTooltip(message, isError = false) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'copy-tooltip';
+            tooltip.textContent = message;
+            
+            if (isError) {
+                tooltip.style.backgroundColor = '#ff4444';
+            }
+            
+            document.body.appendChild(tooltip);
+
+            setTimeout(() => {
+                tooltip.classList.add('fade-out');
+                setTimeout(() => {
+                    if (tooltip.parentNode) {
+                        document.body.removeChild(tooltip);
+                    }
+                }, 300);
+            }, 1700);
+        }
+
+        function setupModalButtons() {
+            // Обработчик для кнопки помощи
+            const helpBtn = document.getElementById('helpBtn');
+            if (helpBtn) {
+                helpBtn.addEventListener('click', function() {
+                    document.getElementById('helpModal').style.display = 'flex';
+                });
+            }
+
+            // Обработчик для кнопки "Вернуться назад"
+            const backBtn = document.querySelector('.left-panel button[onclick*="index.html"]');
+            if (backBtn) {
+                backBtn.addEventListener('click', function(e) {
+                    e.preventDefault(); // Предотвращаем действие по умолчанию
+                    window.location.href = 'index.html';
+                });
+                // Удаляем inline обработчик, чтобы избежать дублирования
+                backBtn.removeAttribute('onclick');
+            }
+
+            // Закрытие модальных окон
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+
+            // Закрытие при клике вне окна
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

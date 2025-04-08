@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ColorHelper - Dual Mode</title>
+    <style>
+        /* Базовые стили */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+            background-color: #1E1F22;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Левая панель */
+        .left-panel {
+            width: 150px;
+            background-color: #1A1919;
+            padding: 20px 10px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .left-panel button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #2C2B2B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .left-panel button:hover {
+            background-color: #3D3C3C;
+            transform: translateX(5px);
+        }
+
+        /* Основной контейнер */
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1E1F22;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(205, 84, 197, 0.5);
+        }
+
+        /* Элементы управления цветом */
+        .gradient-box {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            border: 2px solid #2C2B2B;
+            border-radius: 8px;
+            background: linear-gradient(to right, #000000, #ffffff);
+            box-shadow: 0 5px 10px rgba(205, 84, 197, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .color-picker {
+            display: block;
+            margin: 10px auto;
+            width: 200px;
+            height: 50px;
+            cursor: pointer;
+            background-color: #2C2B2B;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* Кнопка сброса */
+        .reset-button {
+            padding: 10px 15px;
+            margin: 10px auto;
+            display: block;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 10px rgba(255, 68, 68, 0.7);
+        }
+        
+        .reset-button:hover {
+            background-color: #cc0000;
+            transform: scale(1.05);
+            animation: reset-pulse 1.5s infinite;
+        }
+
+        @keyframes reset-pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 68, 68, 0);
+            }
+        }
+
+        /* Индикатор загрузки */
+        .loading-bar {
+            height: 4px;
+            background: rgba(205, 84, 197, 0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, transparent, #B129DA, transparent);
+            animation: loading 2s infinite linear;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+        
+        /* Анимированные кольца */
+        .ring-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+       .ring {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.ring i {
+    position: absolute;
+    inset: 0;
+    border: 4px solid transparent;
+    border-radius: 50%;
+    animation: rotate linear infinite;
+    transition: all 0.5s ease;
+}
+
+.ring i:nth-child(1) {
+    border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+    animation-duration: 6s;
+    border-color: #8EB93A;
+    filter: drop-shadow(0 0 10px #8EB93A);
+}
+
+.ring i:nth-child(2) {
+    border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+    animation-duration: 4s;
+    animation-direction: reverse;
+    border-color: red;
+    filter: drop-shadow(0 0 10px red);
+}
+
+.ring i:nth-child(3) {
+    border-radius: 50% 50% 35% 65% / 50% 45% 55% 50%;
+    animation-duration: 8s;
+    border-color: yellow;
+    filter: drop-shadow(0 0 10px yellow);
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Заголовок */
+.title {
+    text-align: right;
+    color: #8EB93A;
+    font-size: 2.5rem;
+    margin: 0 0 20px 0;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fade-out {
+    animation: fadeOut 0.3s forwards;
+}
+    </style>
+</head>
+<body>
+    <!-- Левая панель навигации -->
+    <div class="left-panel">
+        <button onclick="window.location.href='index.html'">Вернуться назад</button>
+        <button id="helpBtn">Помощь</button>       
+    </div>
+    
+    <!-- Основное содержимое -->
+    <div class="main-container">
+        <div class="content-container">
+            <h1 class="title">ColorHelper</h1>
+            
+            <div class="loading-bar"></div>
+            
+            <div class="ring-container">
+                <div class="ring">
+                    <i></i>
+                    <i></i>
+                    <i></i>    
+                </div>
+            </div>
+            
+            <div id="gradientBox" class="gradient-box"></div>
+            
+            <input type="color" id="colorPicker" class="color-picker" value="#ffffff">
+            
+            <button id="resetColorButton" class="reset-button" onclick="resetSelectedColor()">
+                Сбросить цвет
+            </button>
+        </div>
+    </div>
+</body>
+</html>
