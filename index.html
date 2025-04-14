@@ -4,17 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ColorHelper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            color: white;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 400; 
             background-color: #1E1F22;
             margin: 0;
             padding: 0;
             display: flex;
             min-height: 100vh;
         }
-
+        
+        .title {
+            font-weight: 700; 
+        }
+        
+        button {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600; 
+        }
+        
         /* Левый блок с кнопками */
         .left-panel {
             width: 150px;
@@ -26,6 +38,7 @@
         }
 
         .left-panel button {
+            font-family: Open Sans;
             display: block;
             width: 100%;
             padding: 12px;
@@ -67,6 +80,7 @@
 
         /* Модальные окна */
         .modal {
+            font-family: Open Sans;
             display: none;
             position: fixed;
             top: 0;
@@ -80,6 +94,7 @@
         }
 
         .modal-content {
+            font-family: ;
             background-color: #1A1919;
             padding: 20px;
             border-radius: 8px;
@@ -128,6 +143,9 @@
         }
 
         .v1_2 {
+            font-family: Open Sans;
+            font-weight: 600;
+            color: white;
             width: 250px;
             height: 50px;
             background-color: #B129DA;
@@ -152,6 +170,7 @@
         }
 
         .searchInput {
+            font-family: Open Sans;
             background-color: transparent;
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 5px;
@@ -162,6 +181,7 @@
         }
 
         .searchButton {
+            font-family: Open Sans;
             background-color: #B129DA;
             border: none;
             color: white;
@@ -202,6 +222,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-family: Open Sans;
             font-size: 14px;
             transition: all 0.3s ease;
             box-shadow: 0 5px 10px rgba(255, 68, 68, 0.7);
@@ -209,6 +230,7 @@
 
         /* Стеклянная панель */
         .glass-panel {
+            color: white;
             background: rgba(30, 31, 34, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -359,7 +381,7 @@
 <body>
     <!-- Левый блок с кнопками -->
     <div class="left-panel">
-        <button onclick="window.location.href='dualpip.html'">Режим двух пипеток</button>
+        <button onclick="window.location.href='ringCheme.html'">Подобрать сочетание</button>
         <button id="dualModeBtn">Режим двух фото</button>
         <button id="settingsBtn">Настройки</button>
         <button id="aboutBtn">О программе</button>
@@ -370,7 +392,10 @@
     <!-- Основное содержимое -->
     <div class="main-container">
         <div class="container">
-            <h1 style="text-align: right; color: #8EB93A; font-size: 2.5rem; margin: 0 0 20px 0;">ColorHelper</h1>
+            <h1 style="text-align: right; font-size: 2.5rem; margin: 0 0 20px 0;">
+                <span style="color: #9C18DB;">Color</span>
+                <span style="color: #DFDEDE;">Helper</span>
+            </h1>
 
             <div class="loading-bar"></div>
 

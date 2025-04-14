@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ColorHelper - Dual Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Базовые стили */
+        body {
+            font-family: Wadik, sans-serif;
+            color: white;
+            background-color: #1E1F22;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+     .title {
+            font-weight: 700; 
+        }
+        
+        button {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600; 
+        }
+        
+        /* Левая панель */
+        .left-panel {
+            font-family: Open Sans;
+            width: 150px;
+            background-color: #1A1919;
+            padding: 20px 10px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .left-panel button {
+            font-family: Open Sans;
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #2C2B2B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .left-panel button:hover {
+            background-color: #3D3C3C;
+            transform: translateX(5px);
+        }
+
+        /* Основной контейнер */
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1E1F22;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(205, 84, 197, 0.5);
+        }
+
+        /* Кнопка сброса */
+        .reset-button {
+            font-family: Open Sans;
+            padding: 10px 15px;
+            margin: 10px auto;
+            display: block;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 10px rgba(255, 68, 68, 0.7);
+        }
+        
+        .reset-button:hover {
+            background-color: #cc0000;
+            transform: scale(1.05);
+            animation: reset-pulse 1.5s infinite;
+        }
+
+        @keyframes reset-pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 68, 68, 0);
+            }
+        }
+
+        /* Индикатор загрузки */
+        .loading-bar {
+            height: 4px;
+            background: rgba(205, 84, 197, 0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, transparent, #B129DA, transparent);
+            animation: loading 2s infinite linear;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+        
+        /* Анимированные кольца */
+        .ring-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .ring {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .ring i {
+            position: absolute;
+            inset: 0;
+            border: 4px solid transparent;
+            border-radius: 50%;
+            animation: rotate linear infinite;
+            transition: all 0.5s ease;
+        }
+
+        .ring i:nth-child(1) {
+            border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+            animation-duration: 6s;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        .ring i:nth-child(2) {
+            border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+            animation-duration: 4s;
+            animation-direction: reverse;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        .ring i:nth-child(3) {
+            border-radius: 50% 50% 35% 65% / 50% 45% 55% 50%;
+            animation-duration: 8s;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Заголовок */
+        .title {
+            text-align: right;
+            color: #8EB93A;
+            font-size: 2.5rem;
+            margin: 0 0 20px 0;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s forwards;
+        }
+        
+        /* Цветовые схемы */
+        .color-schemes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .scheme {
+            width: 300px;
+            padding: 15px;
+            background-color: #2C2B2B;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .scheme h3 {
+            margin-top: 0;
+            color: #8EB93A;
+            text-align: center;
+        }
+        
+        .colors-container {
+            display: flex;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .color-item {
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .color-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            z-index: 1;
+        }
+        
+        .gradient-preview {
+            height: 60px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .selected-color-info {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        
+        .selected-color-box {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 10px;
+            border-radius: 8px;
+            border: 2px solid #2C2B2B;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Кнопки выбора цвета */
+        .color-picker-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .color-picker-btn {
+            font-family: Open Sans;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 6px rgba(76, 175, 80, 0.4);
+        }
+        
+        .color-picker-btn:hover {
+            background-color: #3e8e41;
+            transform: scale(1.05);
+        }
+        
+        .color-input {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+        }
+        
+        .color-input::-webkit-color-swatch {
+            border: 2px solid #2C2B2B;
+            border-radius: 6px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-input::-moz-color-swatch {
+            border: 2px solid #2C2B2B;
+            border-radius: 6px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Левая панель навигации -->
+    <div class="left-panel">
+        <button onclick="window.location.href='index.html'">Вернуться назад</button>
+        <button id="helpBtn">Помощь</button>       
+    </div>
+    
+    <!-- Основное содержимое -->
+    <div class="main-container">
+        <div class="content-container">
+            <h1 style="text-align: right; font-size: 2.5rem; margin: 0 0 20px 0;">
+                <span style="color: #9C18DB;">Color</span>
+                <span style="color: #DFDEDE;">Helper</span>
+            </h1>
+            
+            <div class="loading-bar"></div>
+            
+            <div class="ring-container">
+                <div class="ring" id="colorRing">
+                    <i></i>
+                    <i></i>
+                    <i></i>    
+                </div>
+            </div>
+            
+            <div class="color-picker-container">
+                <input type="color" id="colorInput" class="color-input" value="#8EB93A">
+                <button id="randomColorBtn" class="color-picker-btn">Случайный</button>
+            </div>
+            
+            <div class="selected-color-info">
+                <div id="selectedColorBox" class="selected-color-box"></div>
+                <div id="selectedColorHex">Выберите цвет</div>
+            </div>
+            
+            <div id="colorSchemes" class="color-schemes">
+                <!-- Здесь будут отображаться цветовые схемы -->
+            </div>
+            
+            <button id="resetColorButton" class="reset-button" onclick="resetSelectedColor()">
+                Сбросить цвет
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Глобальная переменная для хранения выбранного цвета
+        let selectedColor = null;
+        
+        // Элементы DOM
+        const eyedropperBtn = document.getElementById('eyedropperBtn');
+        const colorInput = document.getElementById('colorInput');
+        const randomColorBtn = document.getElementById('randomColorBtn');
+        const selectedColorBox = document.getElementById('selectedColorBox');
+        const selectedColorHex = document.getElementById('selectedColorHex');
+        const colorSchemes = document.getElementById('colorSchemes');
+        const colorRing = document.getElementById('colorRing');
+        
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            // Устанавливаем начальный цвет из input
+            setSelectedColor(colorInput.value);
+        });
+        
+        // Обработчик для input color
+        colorInput.addEventListener('input', (e) => {
+            setSelectedColor(e.target.value);
+        });
+        
+        // Обработчик для случайного цвета
+        randomColorBtn.addEventListener('click', () => {
+            const randomColor = getRandomColor();
+            setSelectedColor(randomColor);
+            colorInput.value = randomColor;
+        });
+        
+        // Функция для установки выбранного цвета
+        function setSelectedColor(color) {
+            selectedColor = color;
+            selectedColorBox.style.backgroundColor = selectedColor;
+            selectedColorHex.textContent = selectedColor;
+            
+            // Генерируем цветовые схемы
+            generateColorSchemes(selectedColor);
+            
+            // Обновляем кольца на основе триадной схемы
+            updateRingColors(selectedColor);
+        }
+        
+        // Функция для генерации цветовых схем на основе круга Иттена
+        function generateColorSchemes(baseColor) {
+            if (!baseColor) return;
+            
+            // Преобразуем HEX в HSL
+            const hsl = hexToHsl(baseColor);
+            const hue = hsl[0];
+            const saturation = hsl[1];
+            const lightness = hsl[2];
+            
+            // Очищаем предыдущие схемы
+            colorSchemes.innerHTML = '';
+            
+            // 1. Комплементарная схема (дополнительные цвета)
+            const complementaryHue = (hue + 180) % 360;
+            const complementaryColor = hslToHex(complementaryHue, saturation, lightness);
+            
+            createSchemeCard(
+                "Комплементарная схема", 
+                [baseColor, complementaryColor],
+                `linear-gradient(90deg, ${baseColor}, ${complementaryColor})`
+            );
+            
+            // 2. Триадная схема
+            const triad1 = (hue + 120) % 360;
+            const triad2 = (hue + 240) % 360;
+            const triadColor1 = hslToHex(triad1, saturation, lightness);
+            const triadColor2 = hslToHex(triad2, saturation, lightness);
+            
+            createSchemeCard(
+                "Триадная схема", 
+                [baseColor, triadColor1, triadColor2],
+                `linear-gradient(90deg, ${baseColor}, ${triadColor1}, ${triadColor2})`
+            );
+            
+            // 3. Аналоговая схема
+            const analogous1 = (hue + 30) % 360;
+            const analogous2 = (hue - 30 + 360) % 360;
+            const analogousColor1 = hslToHex(analogous1, saturation, lightness);
+            const analogousColor2 = hslToHex(analogous2, saturation, lightness);
+            
+            createSchemeCard(
+                "Аналоговая схема", 
+                [baseColor, analogousColor1, analogousColor2],
+                `linear-gradient(90deg, ${analogousColor2}, ${baseColor}, ${analogousColor1})`
+            );
+            
+            // 4. Раздельно-комплементарная схема
+            const splitComp1 = (hue + 150) % 360;
+            const splitComp2 = (hue + 210) % 360;
+            const splitColor1 = hslToHex(splitComp1, saturation, lightness);
+            const splitColor2 = hslToHex(splitComp2, saturation, lightness);
+            
+            createSchemeCard(
+                "Раздельно-комплементарная", 
+                [baseColor, splitColor1, splitColor2],
+                `linear-gradient(90deg, ${splitColor1}, ${baseColor}, ${splitColor2})`
+            );
+            
+            // 5. Квадратная схема
+            const square1 = (hue + 90) % 360;
+            const square2 = (hue + 180) % 360;
+            const square3 = (hue + 270) % 360;
+            const squareColor1 = hslToHex(square1, saturation, lightness);
+            const squareColor2 = hslToHex(square2, saturation, lightness);
+            const squareColor3 = hslToHex(square3, saturation, lightness);
+            
+            createSchemeCard(
+                "Квадратная схема", 
+                [baseColor, squareColor1, squareColor2, squareColor3],
+                `linear-gradient(90deg, ${baseColor}, ${squareColor1}, ${squareColor2}, ${squareColor3})`
+            );
+            
+            // 6. Монохроматическая схема
+            const monoLight = hslToHex(hue, saturation, Math.min(lightness + 20, 100));
+            const monoDark = hslToHex(hue, saturation, Math.max(lightness - 20, 0));
+            
+            createSchemeCard(
+                "Монохроматическая схема", 
+                [monoDark, baseColor, monoLight],
+                `linear-gradient(90deg, ${monoDark}, ${baseColor}, ${monoLight})`
+            );
+        }
+        
+        // Функция для обновления цветов колец на основе триадной схемы
+        function updateRingColors(baseColor) {
+            if (!baseColor) return;
+            
+            const hsl = hexToHsl(baseColor);
+            const hue = hsl[0];
+            const saturation = hsl[1];
+            const lightness = hsl[2];
+            
+            // Генерируем триадные цвета
+            const triad1 = (hue + 120) % 360;
+            const triad2 = (hue + 240) % 360;
+            const triadColor1 = hslToHex(triad1, saturation, lightness);
+            const triadColor2 = hslToHex(triad2, saturation, lightness);
+            
+            // Получаем элементы колец
+            const rings = colorRing.querySelectorAll('i');
+            
+            // Устанавливаем цвета для каждого кольца
+            rings[0].style.borderColor = baseColor;
+            rings[0].style.color = baseColor;
+            
+            rings[1].style.borderColor = triadColor1;
+            rings[1].style.color = triadColor1;
+            
+            rings[2].style.borderColor = triadColor2;
+            rings[2].style.color = triadColor2;
+        }
+        
+        // Функция для создания карточки цветовой схемы
+        function createSchemeCard(title, colors, gradient) {
+            const scheme = document.createElement('div');
+            scheme.className = 'scheme';
+            
+            const titleEl = document.createElement('h3');
+            titleEl.textContent = title;
+            
+            const colorsContainer = document.createElement('div');
+            colorsContainer.className = 'colors-container';
+            
+            colors.forEach(color => {
+                const colorItem = document.createElement('div');
+                colorItem.className = 'color-item';
+                colorItem.style.backgroundColor = color;
+                colorItem.textContent = color;
+                colorsContainer.appendChild(colorItem);
+            });
+            
+            const gradientPreview = document.createElement('div');
+            gradientPreview.className = 'gradient-preview';
+            gradientPreview.style.background = gradient;
+            
+            scheme.appendChild(titleEl);
+            scheme.appendChild(colorsContainer);
+            scheme.appendChild(gradientPreview);
+            
+            colorSchemes.appendChild(scheme);
+        }
+        
+        // Функция для сброса выбранного цвета
+        function resetSelectedColor() {
+            selectedColor = null;
+            selectedColorBox.style.backgroundColor = 'transparent';
+            selectedColorHex.textContent = 'Выберите цвет';
+            colorSchemes.innerHTML = '';
+            
+            // Сбрасываем кольца к начальным значениям
+            const rings = colorRing.querySelectorAll('i');
+            rings[0].style.borderColor = '#8EB93A';
+            rings[0].style.color = '#8EB93A';
+            rings[1].style.borderColor = 'red';
+            rings[1].style.color = 'red';
+            rings[2].style.borderColor = 'yellow';
+            rings[2].style.color = 'yellow';
+            
+            // Сбрасываем input color
+            colorInput.value = '#8EB93A';
+        }
+        
+        // Функция для генерации случайного цвета
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+        
+        // Вспомогательные функции для преобразования цветов
+        function hexToHsl(hex) {
+            // Удаляем # из начала
+            hex = hex.replace('#', '');
+            
+            // Преобразуем HEX в RGB
+            let r, g, b;
+            if (hex.length === 3) {
+                r = parseInt(hex[0] + hex[0], 16) / 255;
+                g = parseInt(hex[1] + hex[1], 16) / 255;
+                b = parseInt(hex[2] + hex[2], 16) / 255;
+            } else {
+                r = parseInt(hex.substring(0, 2), 16) / 255;
+                g = parseInt(hex.substring(2, 4), 16) / 255;
+                b = parseInt(hex.substring(4, 6), 16) / 255;
+            }
+            
+            // Преобразуем RGB в HSL
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if (max === min) {
+                h = s = 0; // оттенок серого
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                
+                h /= 6;
+            }
+            
+            return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+        }
+        
+        function hslToHex(h, s, l) {
+            h = h % 360;
+            s = Math.max(0, Math.min(100, s)) / 100;
+            l = Math.max(0, Math.min(100, l)) / 100;
+            
+            let r, g, b;
+            
+            if (s === 0) {
+                r = g = b = l; // оттенки серого
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                
+                r = hue2rgb(p, q, h / 360 + 1/3);
+                g = hue2rgb(p, q, h / 360);
+                b = hue2rgb(p, q, h / 360 - 1/3);
+            }
+            
+            const toHex = x => {
+                const hex = Math.round(x * 255).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            };
+            
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+    </script>
+</body>
+</html>
